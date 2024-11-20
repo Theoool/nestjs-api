@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  username  String
+  accountStatus String @default("active")
+  isActive Boolean @default(true)
+  hashRt    String?
+  // posts     Post[]
+  urlPosts  UrlPost[]
+  primaryUserFavorite  UserFavorite[] @relation("PrimaryUserFavorite")
+  secondaryUserFavorite  UserFavorite[] @relation("SecondaryUserFavorite")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+model UrlPost {
+  id        String   @id @default(cuid())
+  image     String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  UserFavorite  UserFavorite @relation(fields: [UserFavoriteId], references: [id])
+  UserFavoriteId  String
+}4
+model UserFavorite {
+  id        String   @id @default(cuid())
+  keyword   String?
+  content   String?
+  isPublic  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  primaryUser User     @relation(fields: [primaryUserId], references: [id], name: "PrimaryUserFavorite")
+  primaryUserId  String
+  secondaryUsers User[] @relation("SecondaryUserFavorite")
+  secondaryUserId  String
+  UrlPost   UrlPost[]
+}
+model SecondaryUserFavorite {
+  A String // 引用 UserFavorite.id
+  B String // 引用 User.id
+  @@unique([A, B])
+  @@index([B])
+  @@map("SecondaryUserFavorite")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BANNED
+}
+  
