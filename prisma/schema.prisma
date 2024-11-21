@@ -38,7 +38,7 @@ model UrlPost {
   authorId  String
   UserFavorite  UserFavorite @relation(fields: [UserFavoriteId], references: [id])
   UserFavoriteId  String
-}4
+}
 model UserFavorite {
   id        String   @id @default(cuid())
   keyword   String?

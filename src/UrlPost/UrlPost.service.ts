@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, UnauthorizedExcepti
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 // import * as bcrypt from 'bcrypt';
-import parseWebPageForAI from '../unict';
+import {parseWebPageForAI} from '../unict';
 import { UrlPost } from '@prisma/client';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
