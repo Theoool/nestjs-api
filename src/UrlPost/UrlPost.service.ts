@@ -15,7 +15,7 @@ export class urlPostService {
     private httpService: HttpService,
   ) {}
   async createUrlPost(url: string): Promise<any> {
-     
+    //  return url;
         const data = await parseWebPageForAI(url);
         return data;
   }
