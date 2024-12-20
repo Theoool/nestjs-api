@@ -21,14 +21,13 @@ model User {
   accountStatus String @default("active")
   isActive Boolean @default(true)
   hashRt    String?
-  // posts     Post[]
-  urlPosts  UrlPost[]
+  cards  card[]
   primaryUserFavorite  UserFavorite[] @relation("PrimaryUserFavorite")
   secondaryUserFavorite  UserFavorite[] @relation("SecondaryUserFavorite")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
-model UrlPost {
+model card {
   id        String   @id @default(cuid())
   image     String
   title     String
@@ -43,7 +42,7 @@ model UrlPost {
 model UserFavorite {
   id        String   @id @default(cuid())
   keyword   String?
-  content   String?
+  title     String
   isPublic  Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
@@ -51,7 +50,7 @@ model UserFavorite {
   primaryUserId  String
   secondaryUsers User[] @relation("SecondaryUserFavorite")
   secondaryUserId  String
-  UrlPost   UrlPost[]
+  card   card[]
 }
 model SecondaryUserFavorite {
   A String // 引用 UserFavorite.id

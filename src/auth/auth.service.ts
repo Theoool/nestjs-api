@@ -10,7 +10,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(email: string, password: string, username: string) {
+  async signup(
+    {email, password, username}:
+    {email: string, password: string, username?: string}) {
     // 检查邮箱是否已存在
     const exists = await this.prisma.user.findUnique({ where: { email } });
     if (exists) {
@@ -25,7 +27,7 @@ export class AuthService {
       data: {
         email,
         password: hashedPassword,
-        username,
+        username:!username?'new_Theo':username,
       },
     });
 

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { UrlPostModule } from './UrlPost/UrlPost.module';
+import { CardModule } from './Card/card.module';
+import { UserFavoriteModule } from './UserFavorite/UserFavorite.module';
 
 @Module({
   imports: [
@@ -11,7 +12,9 @@ import { UrlPostModule } from './UrlPost/UrlPost.module';
     }),
     AuthModule,
     PrismaModule,
-    UrlPostModule,
+    CardModule,
+    UserFavoriteModule
   ],
 })
+
 export class AppModule {}

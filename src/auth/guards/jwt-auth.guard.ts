@@ -1,19 +1,31 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  handleRequest(err, user, info) {
-    // console.log(err, user, info);
+export class JwtAuthGuard implements CanActivate {
+  constructor(private jwtService: JwtService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(request);
     
-    // 如果验证失败，抛出异常
-    if (err || !user) {
-      console.log("未授权");
-      
-      throw err || new UnauthorizedException('未授权访问');
+    if (!token) {
+      throw new UnauthorizedException('未提供token');
     }
-    return user;
+    
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+      // 在 request 对象上添加用户信息，这样在 controller 中可以使用
+      request['user'] = payload;
+      return true;
+    } catch {
+      throw new UnauthorizedException('无效的token');
+    }
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }
-
-// name: Theo / zeo /TheoDia
