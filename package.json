@@ -27,6 +27,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.3.1",
     "@langchain/community": "^0.3.15",
     "@langchain/core": "^0.3.18",
     "@langchain/openai": "^0.3.14",
@@ -47,6 +48,7 @@
     "class-validator": "^0.14.1",
     "crypto-js": "^4.2.0",
     "langchain": "^0.3.6",
+    "node-fetch": "^3.3.2",
     "node-summarizer": "^1.0.7",
     "openai": "^4.72.0",
     "passport": "^0.6.0",
