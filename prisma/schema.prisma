@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id                    String         @id @default(cuid())
+  email                 String         @unique
+  password              String
+  accountStatus         String         @default("active")
+  createdAt             DateTime       @default(now())
+  hashRt                String?
+  isActive              Boolean        @default(true)
+  updatedAt             DateTime       @default(now()) @updatedAt
+  username              String
+  primaryUserFavorite   UserFavorite[] @relation("PrimaryUserFavorite")
+  cards                 card[]
+  secondaryUserFavorite UserFavorite[] @relation("SecondaryUserFavorite")
+}
+
+
+model card {
+  id             String       @id @default(cuid())
+  image          String
+  title          String
+  url            String
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  authorId       String
+  
+  tags           String[]
+  UserFavoriteId String
+  UserFavorite   UserFavorite @relation(fields: [UserFavoriteId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model UserFavorite {
+  id              String   @id @default(cuid())
+  keyword         String?
+  isPublic        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  primaryUserId   String
+  secondaryUserId String
+  title           String
+  primaryUser     User     @relation("PrimaryUserFavorite", fields: [primaryUserId], references: [id])
+  card            card[]
+  secondaryUsers  User[]   @relation("SecondaryUserFavorite")
+}
+
+model SecondaryUserFavorite {
+  A String
+  B String
+
+  @@unique([A, B])
+  @@index([B])
+  @@map("SecondaryUserFavorite")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BANNED
+}
