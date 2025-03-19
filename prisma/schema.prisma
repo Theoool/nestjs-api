@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id                    String         @id @default(cuid())
+  email                 String         @unique @db.VarChar(255)
+  image                 String
+  password              String?        @db.VarChar(128)
+  refreshToken          String?        @db.VarChar(512)  // 重命名hashRt为refreshToken
+  accountStatus         UserStatus     @default(ACTIVE)
+  createdAt             DateTime       @default(now())
+  isActive              Boolean        @default(true)
+  updatedAt             DateTime       @default(now()) @updatedAt
+  username              String         @unique @db.VarChar(50)
+  lastLogin             DateTime?
+  sessions              Session[]
+  account           account?
+  primaryUserFavorite   UserFavorite[] @relation("PrimaryUserFavorite")
+  cards                 card[]
+  secondaryUserFavorite UserFavorite[] @relation("SecondaryUserFavorite")
+  @@index([email, username])
+}
+model account {
+  id                 Int     @id @default(autoincrement())
+  provider           String
+  type               String
+  providerAccountId  String
+  access_token       String  @db.VarChar(2048)
+  token_type         String?
+  scope              String?
+  userId             String  @unique
+  user               User    @relation(fields: [userId], references: [id])
+  @@index([providerAccountId])
+}
+
+
+
+model card {
+  id             String       @id @default(cuid())
+  image          String
+  title          String
+  url            String
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  authorId       String
+  tags           String[]
+  Embedding     Float[]
+  UserFavoriteId String
+  UserFavorite   UserFavorite @relation(fields: [UserFavoriteId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model UserFavorite {
+  id              String   @id @default(cuid())
+  keyword         String?
+  isPublic        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  primaryUserId   String
+  secondaryUserId String
+  title           String
+  primaryUser     User     @relation("PrimaryUserFavorite", fields: [primaryUserId], references: [id])
+  card            card[]
+  secondaryUsers  User[]   @relation("SecondaryUserFavorite")
+}
+
+
+model SecondaryUserFavorite {
+  A String
+  B String
+  @@unique([A, B])
+  @@index([B])
+  @@map("SecondaryUserFavorite")
+}
+
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BANNED
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @db.VarChar(512)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  expires      DateTime
+  ipAddress    String?
+  deviceInfo   String?  // 存储设备信息
+  createdAt    DateTime @default(now())
+
+  @@index([sessionToken])
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+        .code-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .verification-code {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            font-family: monospace;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            border-radius: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">您的登录验证码</h1>
+        <p>您好，</p>
+        <p>感谢您使用我们的服务！请使用以下验证码完成登录：</p>
+        <div class="code-container">
+            <div class="verification-code">{{url}}</div>
+        </div>
+        <p>此验证码将在5分钟内有效。如果验证码无法使用，您可以直接输入以下验证码：</p>
+        <p style="text-align: center; font-weight: bold;">{{url}}</p>
+        <p>如果您没有请求此验证码，请忽略此邮件。</p>
+        <div class="footer">
+            <p>此邮件由系统自动发送，请勿回复。</p>
+            <p>验证码有效期为5分钟。</p>
+        </div>
+    </div>
+</body>
+</html>

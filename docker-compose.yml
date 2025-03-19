@@ -1,0 +1,68 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest_app
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - TYPESENSE_HOST=${TYPESENSE_HOST}
+      - TYPESENSE_PORT=${TYPESENSE_PORT}
+      - TYPESENSE_PROTOCOL=${TYPESENSE_PROTOCOL}
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - REDIS_URL=redis://redis:6379/0  # 新增 Redis 环境变量
+    networks:
+      - app_network
+    depends_on:
+      - postgres
+      - typesense
+    restart: unless-stopped
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  typesense:
+    image: typesense/typesense:0.25.1
+    container_name: typesense
+    environment:
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - TYPESENSE_DATA_DIR=/data
+    ports:
+      - "8108:8108"
+    volumes:
+      - typesense_data:/data
+    networks:
+      - app_network
+    restart: unless-stopped
+  # 新增 Redis 服务
+  redis:
+    image: redis:7-alpine  # 使用 Redis 官方镜像
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data  # Redis 数据持久化
+    networks:
+      - app_network
+    restart: unless-stopped
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  typesense_data:
+  redis_data:
