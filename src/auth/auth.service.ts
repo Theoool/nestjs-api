@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import type { User } from '@prisma/client'; 
 import { MailService } from 'src/email/mail.service';
 
