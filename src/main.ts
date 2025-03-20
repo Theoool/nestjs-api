@@ -2,11 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as cors from 'cors';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule);
-  app.use(require('cors')({
+  
+  // 使用导入的 cors
+  app.use(cors({
     allowedHeaders: ['x-ai-model', 'x-api-key', 'x-ai-baseurl', 'Content-Type', 'Authorization']
   }));
   app.enableCors({

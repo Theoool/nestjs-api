@@ -6,7 +6,7 @@ import  { parseSeoAi } from '../common/Ai/seo'
 import  { getCoverAnalysis } from '../common/Ai/Cover'
 import  { processFile } from '../common/Ai/Html'
 import { Readable } from 'stream';
-import crawlXiaohongshu from 'src/common/Ai/Xiaohushu';
+// import crawlXiaohongshu from 'src/common/Ai/Xiaohushu';
 import { OpentAiOptions ,model} from 'src/common/setting';
 import { AiConfigMiddleware } from 'src/common/middleware/ai-config.middleware';
 import { fetchWebpage, parseWebPageForAI } from 'src/common';
@@ -234,7 +234,7 @@ export class SearchController {
   }
   @Get('XIAO')
   async X() {
-    return crawlXiaohongshu('https://www.xiaohongshu.com/explore/67c698fd000000001203fdc8?xsec_token=ABKprItK9P4GxiaKN_n1q3qQ5KEgCxMen5RfnOA-AxxmE=&xsec_source=pc_feed')
+    // return crawlXiaohongshu('https://www.xiaohongshu.com/explore/67c698fd000000001203fdc8?xsec_token=ABKprItK9P4GxiaKN_n1q3qQ5KEgCxMen5RfnOA-AxxmE=&xsec_source=pc_feed')
     // return this.searchService.getCollectionInfo();
   }
 }

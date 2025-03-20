@@ -7,6 +7,8 @@ import { CurrentUser } from 'src/auth/auth.decorator';
 import {SearchService} from '../search/search.service'
 import { PageQueryDto } from './dto/page-query.dto';
 import {fetchWebpage} from '../common/index'
+import {crawlXiaohongshu} from '../common/Ai/Xiaohushu'
+
 
 @ApiTags('Card')
 @Controller('Card')
@@ -51,14 +53,17 @@ async CreateCard(
 async getCard() {
     return await this.cardService.getcard()
 }
+@Get('xiao')
+@ApiOperation({ summary: '获取卡片' })  
+async xiaohongshu() {
+    return await crawlXiaohongshu('https://www.xiaohongshu.com/explore/67d60b07000000001b03ab7e?xsec_token=ABk-CniWZmaV0w4_syKutNbqcojgIGq6FD_jYzt-XZaQI=&xsec_source=pc_feed')
+}
+
 @Get("GetOneCard/:id")
 @ApiOperation({ summary: '获取卡片' }) 
 async GetOneCard(@Param('id') id: string,) {
     return await this.cardService.GetOnecard(id)
 }
-
-
-
 
 @Post('updata/:id')
 @UseGuards(JwtAuthGuard)

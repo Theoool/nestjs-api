@@ -1,5 +1,4 @@
-// const Puppeteer = require('puppeteer');
-import Puppeteer from 'passport'
+const Puppeteer = require('puppeteer');
 
 async function crawlXiaohongshu(postUrl) {
     try {
@@ -17,9 +16,11 @@ async function crawlXiaohongshu(postUrl) {
         });
         
         await page.waitForSelector('.note-content', { timeout: 10000 });
-        console.log(page);
+        console.log("怕个---",page);
         
         const title = await page.title();
+       console.log();
+       
         const author = await page.$eval('span.username', el => el.textContent);
         const mainTextSpan = await page.$('div#detail-desc span.note-text span');
         const contentText = await mainTextSpan.evaluate(el => el.textContent);
@@ -49,18 +50,7 @@ async function crawlXiaohongshu(postUrl) {
         }));
         
         await browser.close();
-         console.log({
-          title,
-          author,
-          publishDate,
-          location,
-          content: contentText,
-          hashtags,
-          images: imageUrls,
-          hotComments,
-          seo: metaTags
-      });
-         
+        
         return {
             title,
             author,
@@ -79,11 +69,41 @@ async function crawlXiaohongshu(postUrl) {
 }
 
 async function expandAllComments(page) {
-    while (true) {
-        const showMoreButtons = await page.$$('div.show-more');
-        if (showMoreButtons.length === 0) break;
-        await Promise.all(showMoreButtons.map(button => button.click()));
-        await page.waitForTimeout(1000);
+    try {
+        while (true) {
+            // 等待"显示更多"按钮出现
+            const showMoreButtons = await page.$$('div.show-more');
+            if (showMoreButtons.length === 0) break;
+
+            // 确保按钮可点击
+            for (const button of showMoreButtons) {
+                // 检查按钮是否在视图中
+                await button.evaluate(el => {
+                    if (el && el.isConnected) {
+                        // 滚动到按钮位置
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+                
+                // 等待一下确保滚动完成
+                await page.waitForTimeout(500);
+
+                // 尝试点击
+                try {
+                    await button.click({ delay: 100 });
+                } catch (err) {
+                    console.log('按钮点击失败，继续下一个');
+                    continue;
+                }
+            }
+
+            // 等待新内容加载
+            await page.waitForTimeout(1000);
+        }
+    } catch (error) {
+        console.error('展开评论失败:', error);
+        // 继续执行，不中断整个爬取过程
     }
 }
-export default crawlXiaohongshu;
+
+export {crawlXiaohongshu}
