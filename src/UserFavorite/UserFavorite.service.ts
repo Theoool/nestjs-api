@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, UnauthorizedExcepti
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { HttpService } from '@nestjs/axios';
-import {summarizeCollectionStream} from "../common/Ai/tag"
+// import {summarizeCollectionStream} from "../common/Ai/tag"
 
 @Injectable()
 export class UserFavoriteService {
@@ -103,8 +103,8 @@ async SetFavoriteTag(id: string) {
 
   try {
     // 使用AI进行标签总结
-    const summary = await summarizeCollectionStream(JSON.stringify(processedCards));
-    return summary;
+    // const summary = await summarizeCollectionStream(JSON.stringify(processedCards));
+    return "";
   } catch (error) {
     throw new BadRequestException('标签生成失败');
   }
